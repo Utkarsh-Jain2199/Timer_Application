@@ -12,7 +12,7 @@ import {
 import { useTheme } from '../contexts/ThemeContext';
 import { Storage } from '../utils/storage';
 
-export default function AddTimerScreen({ navigation }) {
+export default function AddTimerScreen({ navigation, route }) {
   const { colors } = useTheme();
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
@@ -59,7 +59,7 @@ export default function AddTimerScreen({ navigation }) {
 
   const handleSaveTimer = async () => {
     if (!validateInputs()) return;
-
+  
     try {
       const existingTimers = await Storage.getTimers();
       const newTimer = {
@@ -70,8 +70,16 @@ export default function AddTimerScreen({ navigation }) {
         enableHalfwayAlert,
         createdAt: new Date().toISOString(),
       };
-
-      await Storage.saveTimers([...existingTimers, newTimer]);
+  
+      const updatedTimers = [...existingTimers, newTimer];
+      await Storage.saveTimers(updatedTimers);
+      
+      // Add these two lines
+      const { onTimerAdded } = route.params || {};
+      if (onTimerAdded) {
+        onTimerAdded();
+      }
+  
       Alert.alert(
         'Success',
         'Timer created successfully!',
