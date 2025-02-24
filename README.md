@@ -115,5 +115,5 @@ Build a React Native app that allows users to create, manage, and interact with 
 
 Download APK
 
-For Android users, you can download and install the latest version of the app using the APK file: [https://drive.google.com/file/d/1Rf_TJHn2fO6oZIXHznfN60hjsKeJAZ8Q/view?usp=sharing]
+For Android users, you can download and install the latest version of the app using the APK file: [Download APK](https://drive.google.com/file/d/1Rf_TJHn2fO6oZIXHznfN60hjsKeJAZ8Q/view?usp=sharing)
 
