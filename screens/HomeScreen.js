@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { useCallback } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Storage } from '../utils/storage';
 import TimerGroup from '../components/TimerGroup';
@@ -20,6 +22,12 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     loadTimers();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTimers();
+    }, [])
+  );
 
   const loadTimers = async () => {
     const savedTimers = await Storage.getTimers();
@@ -40,6 +48,7 @@ export default function HomeScreen({ navigation }) {
     return groups;
   }, {});
 
+
   const handleTimerComplete = async (timer) => {
     const history = await Storage.getHistory();
     const historyEntry = {
@@ -47,12 +56,18 @@ export default function HomeScreen({ navigation }) {
       completedAt: new Date().toISOString(),
     };
     await Storage.saveHistory([...history, historyEntry]);
-    
+
     Alert.alert(
       'Timer Completed!',
       `Congratulations! "${timer.name}" has finished.`,
       [{ text: 'OK' }]
     );
+  };
+
+  const handleAddTimer = () => {
+    navigation.navigate('AddTimer', {
+      onTimerAdded: loadTimers
+    });
   };
 
   return (
@@ -62,7 +77,7 @@ export default function HomeScreen({ navigation }) {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
-      
+
       <FlatList
         data={Object.entries(groupedTimers)}
         keyExtractor={([category]) => category}
@@ -77,7 +92,7 @@ export default function HomeScreen({ navigation }) {
 
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: colors.primary }]}
-        onPress={() => navigation.navigate('AddTimer')}
+        onPress={handleAddTimer}
       >
         <Text style={styles.addButtonText}>Add Timer</Text>
       </TouchableOpacity>
